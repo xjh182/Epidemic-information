@@ -10,6 +10,14 @@ def openURL():
     req = urllib.request.Request(api)
     req.add_header('user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36')
     return urllib.request.urlopen(req)
+    
+def abroadOpenURL():
+
+    api='https://api.inews.qq.com/newsqa/v1/automation/modules/list?modules=FAutoGlobalStatis,FAutoContinentStatis,FAutoGlobalDailyList,FAutoCountryConfirmAdd'
+
+    req = urllib.request.Request(api)
+    req.add_header('user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36')
+    return urllib.request.urlopen(req)
 
 class findData:
     Data = openURL().read().decode('UTF-8')
@@ -32,28 +40,82 @@ class findData:
     heal = str(ass['chinaTotal']['heal'])
     healAdd = str(ass['chinaAdd']['heal'])
     
+    nowConfirm = str(ass['chinaTotal']['nowConfirm'])
+    nowConfirmAdd = str(ass['chinaAdd']['nowConfirm'])
+    
+    importedCase = str(ass['chinaTotal']['importedCase'])
+    importedCaseAdd = str(ass['chinaAdd']['importedCase'])
+    
+    noInfect = str(ass['chinaTotal']['noInfect'])
+    noInfectAdd = str(ass['chinaAdd']['noInfect'])
+    
+    
+    abroadData = abroadOpenURL().read().decode('UTF-8')
+    abroadC = json.loads(abroadData)
+    abroadAss = abroadC['data']
+    
+    nowAbroadConfirm = str(abroadAss['FAutoGlobalStatis']['nowConfirm'])
+    nowAbroadConfirmAdd = str(abroadAss['FAutoGlobalStatis']['nowConfirmAdd'])
+    
+    AbroadConfirm = str(abroadAss['FAutoGlobalStatis']['confirm'])
+    AbroadConfirmAdd = str(abroadAss['FAutoGlobalStatis']['confirmAdd'])
+    
+    AbroadHeal= str(abroadAss['FAutoGlobalStatis']['heal'])
+    AbroadHealAdd = str(abroadAss['FAutoGlobalStatis']['healAdd'])
+    
+    AbroadDead= str(abroadAss['FAutoGlobalStatis']['dead'])
+    AbroadDeadAdd = str(abroadAss['FAutoGlobalStatis']['deadAdd'])
+    
+    
 def window():
     root = tk.Tk()
+    root.title("新冠肺炎疫情最新动态")
     Data = findData()
 
-    name = tk.Label(text="疫情信息获取",font=('Microsoft YaHei',15)).grid(row = 0, column = 1,padx = 100)
+    text = tk.Text(root,width=60,height=40)
+    text.pack()
     
-    confirmNum = tk.Label(text="确诊病例数量："+Data.confirm,font=('Microsoft YaHei',10)).grid(row = 1, column = 0)
-    confirmAddNum = tk.Label(text="与昨日相比增加："+Data.confirmAdd,font=('Microsoft YaHei',10)).grid(row = 2, column = 0)
+    text.insert(tk.INSERT,"国内数据：\n\n")
+    text.insert(tk.INSERT,"累计确诊病例数量："+Data.confirm)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.confirmAdd)
     
-    suspectNum = tk.Label(text="疑似病例数量："+Data.suspect,font=('Microsoft YaHei',10)).grid(row = 1, column = 1,padx = 20)
-    suspectAddNum = tk.Label(text="与昨日相比增加："+Data.suspectAdd,font=('Microsoft YaHei',10)).grid(row = 2, column = 1,padx = 20)
+    text.insert(tk.INSERT,"\n\n累计死亡病例数量："+Data.dead)
+    text.insert(tk.INSERT,"     与昨日相比增加："+Data.deadAdd)
     
-    deadNum = tk.Label(text="死亡病例数量："+Data.dead,font=('Microsoft YaHei',10)).grid(row = 1, column = 2,padx = 20)
-    deadAddNum = tk.Label(text="与昨日相比增加："+Data.deadAdd,font=('Microsoft YaHei',10)).grid(row = 2, column = 2,padx = 20)
+    text.insert(tk.INSERT,"\n\n累计治愈病例数量："+Data.heal)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.healAdd)
     
-    healNum = tk.Label(text="治愈病例数量："+Data.heal,font=('Microsoft YaHei',10)).grid(row = 1, column = 3,padx = 20)
-    healAddNum = tk.Label(text="与昨日相比增加："+Data.healAdd,font=('Microsoft YaHei',10)).grid(row = 2, column = 3,padx = 20)
+    text.insert(tk.INSERT,"\n\n\n现有确诊病例数量："+Data.nowConfirm)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.nowConfirmAdd)
     
-    updata =  tk.Label(text="数据更新日期："+Data.updateTime,font=('Microsoft YaHei',10)).grid(row = 3, column = 0)
-    dataSource =  tk.Label(text="数据来源：腾讯新闻 新冠肺炎疫情最新动态",font=('Microsoft YaHei',10)).grid(row = 3, column = 3)
+    text.insert(tk.INSERT,"\n\n现有疑似病例数量："+Data.suspect)
+    text.insert(tk.INSERT,"     与昨日相比增加："+Data.suspectAdd)
+    
+    text.insert(tk.INSERT,"\n\n现有无症状感染者："+Data.noInfect)
+    text.insert(tk.INSERT,"     与昨日相比增加："+Data.noInfectAdd)
+    
+    text.insert(tk.INSERT,"\n\n\n境外输入病例："+Data.importedCase)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.importedCaseAdd)
     
     
+    text.insert(tk.INSERT,"\n\n\n\n国外数据：\n\n")
+    text.insert(tk.INSERT,"现有确诊病例数量："+Data.nowAbroadConfirm)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.nowAbroadConfirmAdd)
+    
+    text.insert(tk.INSERT,"\n\n累计确诊病例数量："+Data.AbroadConfirm)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.AbroadConfirmAdd)
+    
+    text.insert(tk.INSERT,"\n\n累计治愈病例数量："+Data.AbroadHeal)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.AbroadHealAdd)
+    
+    text.insert(tk.INSERT,"\n\n累计死亡病例数量："+Data.AbroadDead)
+    text.insert(tk.INSERT,"    与昨日相比增加："+Data.AbroadDeadAdd)
+    
+    
+    text.insert(tk.INSERT,"\n\n\n数据更新日期："+Data.updateTime)
+    text.insert(tk.INSERT,"\n数据来源：腾讯新闻 新冠肺炎疫情最新动态")
+    
+    text.configure(state='disabled')
     
     tk.mainloop()
     
